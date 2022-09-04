@@ -19,3 +19,8 @@
 ### required dependencies
 
 - build-essentials
+
+## docs
+
+- https://docs.vmware.com/en/VMware-Workstation-Player-for-Linux/16.0/com.vmware.player.linux.using.doc/GUID-AB5C80FE-9B8A-4899-8186-3DB8201B1758.html
+
