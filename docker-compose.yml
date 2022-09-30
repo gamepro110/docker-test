@@ -1,6 +1,9 @@
-version: "3.3"
+version: "3"
 services:
-  web:
-    build: .
-    ports:
+  website:
+    build: . # uses local Dockerfile to build a container
+    ports: # expose (device/container) 5000:80
       - "5000:80"
+    restart: unless-stopped # keeps the container running until it is manually stopped
+    labels:
+      com.centurylinklabs.watchtower.enable: true

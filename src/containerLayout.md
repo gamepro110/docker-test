@@ -1,64 +1,100 @@
 # container layout
 
 ```mermaid
-flowchart TD
-    subgraph server_graph
-        servKern(kernel)
-        servOs(server os)
+flowchart TB
+  any(any pc)
+  eth(ethernet)
 
+  subgraph server_graph
+    direction TB
 
-        subgraph vm_1_graph
+    servKern(kernel)
+    servOs(server os)
+    virt([vertualize])
 
-            vm1kernel(vm kernel)
-            vm1os(vm os)
+    subgraph vm_2
+      direction TB
+      vm2kernel(vm kernel)
+      vm2os(vm os)
 
-            subgraph docker_container_graph
-                direction TB
+      vm2os --> vm2kernel 
+    end
+    
+    subgraph vm_1
+      direction TB
 
-                dockOs(docker os)
-                nginx(nginx webserver)
-                site(website)
-            end
-            
-            vmIP(vm ip)
-            dock(docker runner)
+      dock(docker runner)
+      vmIP(vm ip)
+      
+      subgraph docker_container
+        dockOs(docker os)
+        nginx(nginx webserver)
+        site(website)
+      end
 
-            dock -- forward ---> dockOs
-            vm1os -- virtualize --> dockOs
-            dockOs -- runs --> nginx
-        end
-        subgraph vm_2_graph
-            vm2kernel(vm kernel)
-            vm2os(vm os)
+      vm1os(vm os)
+      vm1kernel(vm kernel)
 
-            vm2os --> vm2kernel 
-
-        end
+      vm1os -- virtualize ---> dockOs
+      dock -- forward --> dockOs
+      dockOs -- runs --> nginx
     end
 
-    any(any pc)
-    eth(ethernet)
+  end
 
-    servOs -- uses ---> servKern
+  servOs -- uses --> servKern
 
-    nginx -- expose port 80 --> dock
-    nginx -- serve --> site
+  nginx -- expose port 80 ---> dock
+  nginx -- serve --> site
 
-    vm1os -- expose localhost:80 to network --> dock
-    vmIP ---> dock
+  vm1os -- expose localhost:80 to network --> dock
+  vmIP ---> dock
 
-    eth -- forward --> vmIP
+  eth -- forward --> vmIP
 
-    dockOs -- uses --> vm1kernel
-    vm1os -- uses ---> vm1kernel
+  dockOs -- uses ---> vm1kernel
+  vm1os -- uses --> vm1kernel
 
-    any -- request ---> eth
+  any -- request ---> eth
 
-    servOs -- virtualize --> vm1os
-    servOs -- virtualize ---> vm2os
-    servOs -- virtualize ---> vm3os
+  servOs --- virt
+
+  virt ---> vm_1
+  virt ---> vm_2
+
 ```
 
 ## feedback
 
-- [ ] where does the docker img come from??
+- where does the docker img come from ??
+  - in this setup it comes from building it locally using a Dockerfile and docker-compose.yml
+    - > ./Dockerfile
+      >
+      >```docker
+      >FROM nginx:1.23
+      >
+      ># copy build book to docker html dir
+      >COPY book/ /usr/share/nginx/html/
+      >
+      ># copy nginx config from local config directory to      >container /etc/nginx directory
+      >COPY config/* /etc/nginx/
+      >
+      ># exposes port 80 from the container to the outside
+      >EXPOSE 80
+      >```
+      >
+      >---
+    - > ./docker-compose.yml
+      >
+      >```yaml
+      >version: "3"
+      >services:
+      >  website:
+      >    build: . # uses the local Dockerfile to build a   container
+      >    ports: # expose (device:container) port 5000:80
+      >      - "5000:80"
+      >    restart: unless-stopped # keeps the container   running until it is manually stopped
+      >
+      >```
+      >
+      >---
