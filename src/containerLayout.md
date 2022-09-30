@@ -2,58 +2,65 @@
 
 ```mermaid
 flowchart TB
-    any(any pc)
-    eth(ethernet)
+  any(any pc)
+  eth(ethernet)
 
-    subgraph server_graph
-        direction TB
+  subgraph server_graph
+    direction TB
 
-        servKern(kernel)
-        servOs(server os)
+    servKern(kernel)
+    servOs(server os)
+    virt([vertualize])
 
-        subgraph vm_2
-            vm2kernel(vm kernel)
-            vm2os(vm os)
+    subgraph vm_2
+      direction TB
+      vm2kernel(vm kernel)
+      vm2os(vm os)
 
-            vm2os --> vm2kernel 
-        end
-        
-        subgraph vm_1
-            subgraph docker_container
-                dockOs(docker os)
-                nginx(nginx webserver)
-                site(website)
-            end
+      vm2os --> vm2kernel 
+    end
+    
+    subgraph vm_1
+      direction TB
 
-            vm1kernel(vm kernel)
-            vm1os(vm os)
-            
-            vmIP(vm ip)
-            dock(docker runner)
+      dock(docker runner)
+      vmIP(vm ip)
+      
+      subgraph docker_container
+        dockOs(docker os)
+        nginx(nginx webserver)
+        site(website)
+      end
 
-            dock -- forward ---> dockOs
-            vm1os -- virtualize --> dockOs
-            dockOs -- runs --> nginx
-        end
+      vm1os(vm os)
+      vm1kernel(vm kernel)
+
+      vm1os -- virtualize ---> dockOs
+      dock -- forward --> dockOs
+      dockOs -- runs --> nginx
     end
 
-    servOs -- uses ---> servKern
+  end
 
-    nginx -- expose port 80 --> dock
-    nginx -- serve --> site
+  servOs -- uses --> servKern
 
-    vm1os -- expose localhost:80 to network --> dock
-    vmIP ---> dock
+  nginx -- expose port 80 ---> dock
+  nginx -- serve --> site
 
-    eth -- forward --> vmIP
+  vm1os -- expose localhost:80 to network --> dock
+  vmIP ---> dock
 
-    dockOs -- uses --> vm1kernel
-    vm1os -- uses --> vm1kernel
+  eth -- forward --> vmIP
 
-    any -- request ---> eth
+  dockOs -- uses ---> vm1kernel
+  vm1os -- uses --> vm1kernel
 
-    servOs -- virtualize ---> vm_1
-    servOs -- virtualize ---> vm_2
+  any -- request ---> eth
+
+  servOs --- virt
+
+  virt ---> vm_1
+  virt ---> vm_2
 
 ```
 
