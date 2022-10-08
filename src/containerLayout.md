@@ -17,15 +17,15 @@ flowchart TB
       vm2kernel(vm kernel)
       vm2os(vm os)
 
-      vm2os --> vm2kernel 
+      vm2os --> vm2kernel
     end
-    
+
     subgraph vm_1
       direction TB
 
       dock(docker runner)
       vmIP(vm ip)
-      
+
       subgraph docker_container
         dockOs(docker os)
         nginx(nginx webserver)
@@ -71,16 +71,18 @@ flowchart TB
     - > ./Dockerfile
       >
       >```docker
+      ># make a new container based off nginx on version 1.23
       >FROM nginx:1.23
       >
-      ># copy build book to docker html dir
+      ># copy build book to docker html directory
       >COPY book/ /usr/share/nginx/html/
       >
-      ># copy nginx config from local config directory to      >container /etc/nginx directory
+      ># copy nginx config from local config directory to container /etc/nginx directory
       >COPY config/* /etc/nginx/
       >
       ># exposes port 80 from the container to the outside
       >EXPOSE 80
+      >
       >```
       >
       >---
@@ -90,11 +92,23 @@ flowchart TB
       >version: "3"
       >services:
       >  website:
-      >    build: . # uses the local Dockerfile to build a   container
-      >    ports: # expose (device:container) port 5000:80
-      >      - "5000:80"
-      >    restart: unless-stopped # keeps the container   running until it is manually stopped
-      >
+      >    build: . # uses local dockerfile to build a container
+      >    ports: # expose (device:container) 80:80
+      >      - "80:80"
+      >    restart: unless-stopped # keeps the container running until it is manually stopped
+      >  portainer:
+      >    image: portainer/portainer-ce:latest # clones a container from docker-hub from user: "portainer" named: "portainer-ce" using the "latest" tag
+      >    container_name: portainer # sets a unique user defined name
+      >    restart: unless-stopped
+      >    security_opt: # overwrites security flags
+      >      - no-new-privileges:true # this flag makes sure that the current process or any of its children do not change or gain other capabilities
+      >      # source <https://projectatomic.io/blog/2016/03/no-new-privs-docker/>
+      >    volumes:
+      >      - /etc/localtime:/etc/localtime:ro # read-only, share the time of the host with the container
+      >      - /var/run/docker.sock:/var/run/docker.sock:ro # read-only, share the docker network socket of the host with the container
+      >      - ./portainer-data:/data # full access, shares the data from the local folder "./portainer-data" with the directory "/data"
+      >    ports:
+      >      - 9000:9000
       >```
       >
       >---

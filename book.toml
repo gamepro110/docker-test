@@ -1,5 +1,7 @@
 [book]
-authors = [ "Karlo Koelewijn" ]
+authors = [
+    "Karlo Koelewijn"
+]
 language = "en"
 multilingual = false
 src = "src"
@@ -12,4 +14,7 @@ command = "mdbook-mermaid"
 [output]
 
 [output.html]
-additional-js = ["vendor/mermaid/mermaid.min.js", "vendor/mermaid/mermaid-init.js"]
+additional-js = [
+    "vendor/mermaid/mermaid.min.js",
+    "vendor/mermaid/mermaid-init.js"
+]

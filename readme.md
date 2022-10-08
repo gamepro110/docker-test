@@ -2,8 +2,8 @@
 
 ## todo
 
-- [ ] work out documentation
-- [ ] make a network drawing of the docker container
+- [/] work out documentation
+- [x] make a network drawing of the docker container
 
 ## commands used
 
