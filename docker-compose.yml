@@ -1,4 +1,5 @@
 version: "3"
+
 services:
   website:
     build: . # uses local dockerfile to build a container
