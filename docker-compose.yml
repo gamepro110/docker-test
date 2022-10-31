@@ -7,6 +7,14 @@ services:
       - "80:80"
       - "443:443"
     restart: unless-stopped # keeps the container running until it is manually stopped
+    volumes:
+      - ./book/:/usr/share/nginx/html/:ro
+      - /etc/ssl/certs/ngingx-selfsigned.crt:/etc/ssl/certs/ngingx-selfsigned.crt:ro
+      - /etc/ssl/private/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key:ro
+    security_opt:
+      - no-new-privileges:true
+    labels:
+      com.centurylinklabs.watchtower.enable: true
   portainer:
     image: portainer/portainer-ce:latest # clones a container from docker-hub from user: "portainer" named: "portainer-ce" using the "latest" tag
     container_name: portainer # sets a unique user defined name
