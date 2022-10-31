@@ -7,6 +7,14 @@ FROM nginx:1.23
 
 # copy nginx config from local config directory to container /etc/nginx directory
 COPY nginx-config/* /etc/nginx/
+<<<<<<< HEAD
+=======
+
+# copy config files to the correct locations
+COPY private-config/etc_nginx_dhparam.pem /etc/nginx/dhparam.pem
+COPY private-config/etc_ssl_certs_ngingx-selfsigned.crt /etc/ssl/certs/ngingx-selfsigned.crt
+COPY private-config/etc_ssl_private_nginx-selfsigned.key /etc/ssl/private/nginx-selfsigned.key
+>>>>>>> e9b7840 (replaced copy instruction with volume assignment)
 
 # exposes port 80 from the container to the outside
 EXPOSE 80 443
