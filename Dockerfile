@@ -9,5 +9,4 @@ FROM nginx:1.23
 COPY nginx-config/* /etc/nginx/
 
 # exposes port 80 from the container to the outside
-EXPOSE 80
-EXPOSE 443
+EXPOSE 80 443

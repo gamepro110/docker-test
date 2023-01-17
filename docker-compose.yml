@@ -11,6 +11,7 @@ services:
       - ./book/:/usr/share/nginx/html/:ro
       - /etc/ssl/certs/ngingx-selfsigned.crt:/etc/ssl/certs/ngingx-selfsigned.crt:ro
       - /etc/ssl/private/nginx-selfsigned.key:/etc/ssl/private/nginx-selfsigned.key:ro
+      - /etc/nginx/snippets/ssl-params.conf:/etc/nginx/snippets/ssl-params.conf:ro
     security_opt:
       - no-new-privileges:true
     labels:
